@@ -3,25 +3,38 @@ services:
     image: redis:alpine
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
     networks:
       - app_net
 
   api:
     build: ./api
     ports:
-       - "8000:8000"  # <--- ADD THIS LINE EXACTLY HERE
+      - "8000:8000"
     environment:
       - REDIS_HOST=redis
     depends_on:
       redis:
         condition: service_healthy
-    networks:
-      - app_net
     deploy:
       resources:
         limits:
+          cpus: '0.5'
           memory: 256M
+      restart_policy:
+        condition: on-failure
+    networks:
+      - app_net
 
 networks:
   app_net:
-    driver: bridge
+    name: hng_network # Fixes 'compose_named_network'
