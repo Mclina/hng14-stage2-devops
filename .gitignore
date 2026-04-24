@@ -1,0 +1,18 @@
+# Python environment and cache
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+
+# Docker
+.dockerignore
+# (But keep your Dockerfiles and docker-compose.yml!)
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# HNG Specific
+# Don't ignore FIXES.md or README.md!

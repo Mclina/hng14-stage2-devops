@@ -1,15 +1,16 @@
-# Build Stage
-FROM node:18-slim AS build
+FROM node:18-slim
+
 WORKDIR /app
+
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
+
+# Security: Use the built-in 'node' user
+RUN chown -R node:node /app
+USER node
+
 COPY . .
 
-# Production Stage
-FROM node:18-slim
-WORKDIR /app
-RUN useradd -m frontenduser
-USER frontenduser
-COPY --from=build /app .
 EXPOSE 3000
+
 CMD ["npm", "start"]

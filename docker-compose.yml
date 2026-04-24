@@ -1,74 +1,25 @@
-version: '3.8'
-
 services:
   redis:
     image: redis:alpine
-    container_name: redis_service
-    # Requirement: Not exposed on host machine (no ports mapping)
-    networks:
-      - micro_network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+    networks:
+      - app_net
 
   api:
     build: ./api
-    container_name: api_service
     environment:
       - REDIS_HOST=redis
     depends_on:
       redis:
         condition: service_healthy
     networks:
-      - micro_network
-    # Requirement: Resource limits
+      - app_net
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 256M
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
-  worker:
-    build: ./worker
-    container_name: worker_service
-    environment:
-      - REDIS_HOST=redis
-    depends_on:
-      redis:
-        condition: service_healthy
-    networks:
-      - micro_network
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 256M
-
-  frontend:
-    build: ./frontend
-    container_name: frontend_service
-    ports:
-      - "3000:3000"
-    environment:
-      - API_URL=http://api:8000
-    depends_on:
-      api:
-        condition: service_healthy
-    networks:
-      - micro_network
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
           memory: 256M
 
 networks:
-  micro_network:
-    name: internal_app_network
+  app_net:
+    driver: bridge
