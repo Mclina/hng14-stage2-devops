@@ -8,6 +8,8 @@ services:
 
   api:
     build: ./api
+    ports:
+       - "8000:8000"  # <--- ADD THIS LINE EXACTLY HERE
     environment:
       - REDIS_HOST=redis
     depends_on:
