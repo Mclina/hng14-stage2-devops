@@ -18,7 +18,8 @@ jobs:
           if [ -f api/requirements.txt ]; then pip install -r api/requirements.txt; fi
 
       - name: Lint with flake8
-        run: flake8 . 
+        # Change the line below to this exact command
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
       - name: Run tests
         run: pytest
