@@ -30,3 +30,12 @@
 - **Fix:** Implemented `useradd` and `USER` instructions in all Dockerfiles to run processes as non-privileged users.
 - **Issue:** Docker images were too large and included unnecessary build tools.
 - **Fix:** Used Multi-stage builds to keep final production images slim and efficient.
+### 5. Infrastructure: Orchestration & Healthchecks
+* **File:** `docker-compose.yml`
+* **Issue:** Race conditions occurred where the API and Worker attempted to connect to Redis before the database was fully initialized, leading to "Connection Refused" errors.
+* **Fix:** Implemented a native Docker `healthcheck` for the Redis service and configured the `api` and `worker` services with `depends_on: condition: service_healthy`. This ensures a synchronized startup sequence.
+
+### 6. Infrastructure: YAML Syntax & Standards
+* **File:** `docker-compose.yml`
+* **Issue:** Improper indentation and block mapping errors (specifically regarding the `deploy` and `networks` keys) prevented the stack from deploying.
+* **Fix:** Re-aligned all service properties to follow strict YAML 1.2 standards and validated the configuration using `docker compose config` to ensure a valid schema.
